@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const config = require("../config/env.config.js")
+
 let count = 0
 
 const options = {
@@ -11,7 +13,7 @@ const options = {
 
 const connectWithRetry = () => {
     console.log("MongoDB connecting..")
-    mongoose.connect("mongodb://localhost:27017/hostel",options).then(()=> {
+    mongoose.connect(config.ATLAS_URI,options).then(()=> {
         console.log("Connected")
     }).catch(err=> {
         console.log('Connection unsuccessful, retry after 5 seconds. ',++count)
