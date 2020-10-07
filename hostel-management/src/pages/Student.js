@@ -1,7 +1,7 @@
 import React from 'react';
 import {Grid,AppBar,Toolbar,Typography,Button, Stepper,Step,StepButton, TextField, MenuItem} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
+import StatusCard from '../components/StatusCard'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
     profileContainer: {
         display:'flex',
-        paddingTop:'20vh',
+        paddingTop:'10vh',
         alignItems:'center',
         justifyContent:'center',
         alignContent: 'center'
@@ -30,10 +30,17 @@ const useStyles = makeStyles((theme) => ({
         paddingRight:5,
         display:'flex'
     },
+    hostelStatus:{
+        marginTop:50,
+        marginBottom:50,
+        display:'flex',
+        justifyContent:'center',
+        
+    }
 }));
 
 const getSteps = () => {
-    return ['Basic Information','Profile Details','Upload Documents']
+    return ['Basic Information','Profile Details','Upload Documents','Submit Information']
 }
 const getStepContents = (step) => {
     switch(step) {
@@ -43,6 +50,8 @@ const getStepContents = (step) => {
             return 'Step 2: Profile details'
         case 2:
             return 'Step 3: Upload documents'
+        case 3:
+            return 'Step 4: Submit Information'
         default:
             return 'Unknown step'
     }
@@ -191,6 +200,9 @@ const Student = () => {
                     </Toolbar>
                 </AppBar>
             </Grid>
+            <Grid item xs={12} sm={12} md={12} className={classes.hostelStatus}>
+                <StatusCard />
+            </Grid>
             <Grid item xs={12} sm={12} md={12} className={classes.profileContainer}>
                 <Grid item xs={12} sm={6} md={6}>
                     <Stepper alternativeLabel nonLinear activeStep={activeStep}>
@@ -333,8 +345,8 @@ const Student = () => {
                         </Grid>
                         
                     ):
-                    (
-                        <Grid item>Upload Documents</Grid>
+                    ((activeStep==2)?(
+                        <Grid item>Upload Documents</Grid>):(<Grid item >Submit Docuements</Grid>)
                     ))}
                     
                 </Grid>
