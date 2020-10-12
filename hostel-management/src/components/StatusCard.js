@@ -129,6 +129,21 @@ const StatusCard = () => {
                 <TimelineItem>
                     <TimelineOppositeContent className={classes.timeLineOpposite}>
                     </TimelineOppositeContent>
+                    <TimelineSeparator >
+                        <TimelineDot />
+                        <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      Verified
+                      <Typography variant="body2" color="textSecondary" component="p">
+                        You profile has been verified.
+                      </Typography>
+                    </TimelineContent>
+                    
+                </TimelineItem>
+                <TimelineItem>
+                    <TimelineOppositeContent className={classes.timeLineOpposite}>
+                    </TimelineOppositeContent>
                     <TimelineSeparator>
                         <TimelineDot />
                     </TimelineSeparator>
