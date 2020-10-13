@@ -6,7 +6,8 @@ const useStyles = makeStyles((theme) => ({
 
     root:{
         backgroundColor:'#ffffff',
-    }
+        color:'black'
+    },
 
 }));
 const DetailsInfo = (props) => {
@@ -14,8 +15,8 @@ const DetailsInfo = (props) => {
     const classes = useStyles();
     return (
        <Grid container className={classes.root}>
-           <Grid item xs={12} sm={6} md={6} style={{color:'black'}}>
-               sdf
+           <Grid item xs={12} sm={6} md={6} >
+               {props.information.fname} &emsp; {props.information.lname}
            </Grid>
        </Grid>
        
