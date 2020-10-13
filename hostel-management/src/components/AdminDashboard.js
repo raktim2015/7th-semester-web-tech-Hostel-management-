@@ -6,7 +6,18 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid'
+import {Grid} from '@material-ui/core';
+import TableTileSubmitted from './TableTileSubmitted'
+import UserData from './../data/userData.json'
+
+/* Create data to pass to table */
+
+const fields = ['Enrollment Id','First Name','Last Name','Details']
+
+function createData(eid, fname, lname, details) {
+  return { eid, fname, lname, details };
+}
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -81,7 +92,7 @@ const AdminDashboard = () => {
         </AppBar>
         
             <TabPanel value={value} index={0} dir={theme.direction}>
-            Item One
+              <TableTileSubmitted data = {UserData} />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
             Item Two

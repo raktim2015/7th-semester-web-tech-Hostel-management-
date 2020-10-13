@@ -1,32 +1,45 @@
 [
     {
-        "fname":"Raktim",
-        "lname":"Malakar",
-        "enrollId":"510817002"
+        "fname":"Addison",
+        "lname":"Burke",
+        "enrollId":"510217002",
+        "dept":"Electrical Engineering"
     },
     {
         "fname":"Ritesh",
         "lname":"Singh",
-        "enrollId":"510817012"
+        "enrollId":"510817012",
+        "dept":"Information Technology"
     },
     {
         "fname":"Pankaj",
         "lname":"Naik",
-        "enrollId":"510817017"
+        "enrollId":"510817017",
+        "dept":"Information Technology"
     },
     {
         "fname":"Raktim",
         "lname":"Malakar",
-        "enrollId":"510817002"
+        "enrollId":"510817002",
+        "dept":"Information Technology"
     },
     {
-        "fname":"Raktim",
-        "lname":"Malakar",
-        "enrollId":"510817002"
+        "fname":"Emma",
+        "lname":"Cobbett",
+        "enrollId":"510517001",
+        "dept":"Electronics and Telecommunication"
     },
     {
-        "fname":"Raktim",
-        "lname":"Malakar",
-        "enrollId":"510817002"
+        "fname":"Eileen",
+        "lname":"Daves",
+        "enrollId":"510617015",
+        "dept":"Mining Engineering"
+    },
+    {
+        "fname":"Tina",
+        "lname":"Osborne",
+        "enrollId":"510617054",
+        "dept":"Mining Engineering"
     }
+    
 ]
