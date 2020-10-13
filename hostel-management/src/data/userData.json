@@ -3,43 +3,50 @@
         "fname":"Addison",
         "lname":"Burke",
         "enrollId":"510217002",
-        "dept":"Electrical Engineering"
+        "dept":"Electrical Engineering",
+        "status":"1"
     },
     {
         "fname":"Ritesh",
         "lname":"Singh",
         "enrollId":"510817012",
-        "dept":"Information Technology"
+        "dept":"Information Technology",
+        "status":"1"
     },
     {
         "fname":"Pankaj",
         "lname":"Naik",
         "enrollId":"510817017",
-        "dept":"Information Technology"
+        "dept":"Information Technology",
+        "status":"1"
     },
     {
         "fname":"Raktim",
         "lname":"Malakar",
         "enrollId":"510817002",
-        "dept":"Information Technology"
+        "dept":"Information Technology",
+        "status":"1"
     },
     {
         "fname":"Emma",
         "lname":"Cobbett",
         "enrollId":"510517001",
-        "dept":"Electronics and Telecommunication"
+        "dept":"Electronics and Telecommunication",
+        "status":"1"
     },
     {
         "fname":"Eileen",
         "lname":"Daves",
         "enrollId":"510617015",
-        "dept":"Mining Engineering"
+        "dept":"Mining Engineering",
+        "status":"1"
     },
     {
         "fname":"Tina",
         "lname":"Osborne",
         "enrollId":"510617054",
-        "dept":"Mining Engineering"
+        "dept":"Mining Engineering",
+        "status":"1"
     }
     
 ]

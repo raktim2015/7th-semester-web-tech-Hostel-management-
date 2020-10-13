@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {Button,Backdrop} from '@material-ui/core';
+import {Button,Backdrop,Chip} from '@material-ui/core';
 import DetailInfo from './DetailInfo';
 
 function createData(eid, fname, lname, dept, details) {
@@ -28,7 +28,8 @@ function createData(eid, fname, lname, dept, details) {
 let rows = []
 
 const populateRows = (data) => {
-  rows = data.map((obj) => {return createData(obj.enrollId, obj.fname, obj.lname, obj.dept, "View full profile")})
+  const filterRows = data.filter((obj) => obj.status==="1")
+  rows = filterRows.map((obj) => {return createData(obj.enrollId, obj.fname, obj.lname, obj.dept, "View full profile")})
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -138,6 +139,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
@@ -150,8 +152,12 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} selected &emsp;
+          <Chip label="Verify" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}} onClick={props.onVerify}/> &emsp;  
+          <Chip label="Reject" variant="outlined" color="secondary" style={{marginTop:2,marginBottom:2}}/>&emsp;
+          <Chip label="Accept" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}}/> &emsp;
         </Typography>
+        
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
           Submitted Applicants
@@ -217,6 +223,7 @@ const TableTileSubmitted = (props) => {
   const [backdropOpen,setBackdrop] = React.useState(false);
   const [currentClicked, setCurrentClicked] = React.useState({});
 
+  
 
   populateRows(props.data)
   
@@ -278,6 +285,10 @@ const TableTileSubmitted = (props) => {
     setPage(0);
   };
 
+  const handleVerify = () => {
+      let toRemove = []
+      console.log("selected ",selected)
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -286,7 +297,7 @@ const TableTileSubmitted = (props) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} onVerify={handleVerify}/>
         <TableContainer style={{maxHeight:400}}>
           <Table
             className={classes.table}
@@ -303,6 +314,7 @@ const TableTileSubmitted = (props) => {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+              
             />
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
