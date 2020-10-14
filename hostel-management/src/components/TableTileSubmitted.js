@@ -21,15 +21,18 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import {Button,Backdrop,Chip} from '@material-ui/core';
 import DetailInfo from './DetailInfo';
 
-function createData(eid, fname, lname, dept, details) {
-  return { eid, fname, lname, dept, details};
+function createData(eid, fname, lname, dept, details,status) {
+  return { eid, fname, lname, dept, details, status};
 }
 
-let rows = []
+
 
 const populateRows = (data) => {
+  
+  let temprows = []
   const filterRows = data.filter((obj) => obj.status==="1")
-  rows = filterRows.map((obj) => {return createData(obj.enrollId, obj.fname, obj.lname, obj.dept, "View full profile")})
+  temprows = filterRows.map((obj) => {return createData(obj.enrollId, obj.fname, obj.lname, obj.dept, "View full profile", obj.status)})
+  return temprows
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -214,6 +217,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TableTileSubmitted = (props) => {
+  
+  const tempr = populateRows(props.data)
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -222,15 +228,16 @@ const TableTileSubmitted = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [backdropOpen,setBackdrop] = React.useState(false);
   const [currentClicked, setCurrentClicked] = React.useState({});
-
+  const [rows, setRows] = React.useState(populateRows(props.data));
   
-
-  populateRows(props.data)
   
-
+  
+  const handleRowChange = (currData) => {
+      //setRows([])
+      setRows(currData)
+  }
   const handleCurrentClicked = (obj) => {
     setCurrentClicked(obj)
-    console.log(currentClicked)
   }
   const handleBackdropClose = () => {
       setBackdrop(false);
@@ -253,6 +260,7 @@ const TableTileSubmitted = (props) => {
       return;
     }
     setSelected([]);
+
   };
 
   const handleClick = (event, name) => {
@@ -286,14 +294,28 @@ const TableTileSubmitted = (props) => {
   };
 
   const handleVerify = () => {
-      let toRemove = []
-      console.log("selected ",selected)
+      
+      /*  get the selected elements and mark them verified, save the data in database
+          Update data in server.
+          If successfull change the selected status, populateRows(newData)
+      */
+      let temprows = rows;
+      let eidMappedtoIndex = {}
+      rows.forEach((row,index)=> {
+        eidMappedtoIndex[row.eid] = index
+      })
+      selected.forEach((elem) => {
+        rows[eidMappedtoIndex[elem]].status = "2"
+        temprows.splice(eidMappedtoIndex[elem],1)
+      })
+      setSelected([])
+      handleRowChange(temprows)
+      
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
