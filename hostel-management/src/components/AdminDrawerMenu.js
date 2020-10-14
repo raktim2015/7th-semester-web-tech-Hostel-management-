@@ -66,8 +66,8 @@ const drawerContents = [
 ]
 
 const drawerKeys = {
-    "Dashboard":<AdminDashboard/>,
-    "Logout":<InboxIcon/>  
+    "Dashboard": <AdminDashboard/>,
+    "Logout": <InboxIcon/>  
 }
 
 
@@ -156,10 +156,8 @@ function AdminDrawerMenu(props) {
         </Hidden>
       </nav>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
-        
+        <div className={classes.toolbar} /> 
         {drawerKeys[content]}
-        
       </main>
     </div>
   );
