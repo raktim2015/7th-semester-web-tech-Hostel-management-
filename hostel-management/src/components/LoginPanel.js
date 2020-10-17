@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-function Alert(props) {
+const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -94,6 +94,7 @@ const LoginPanel = () => {
   const [value, setValue] = React.useState(0)
   const [userValue, setUserValue] = React.useState('student')
   const [snackBar,setSnackBarValue] = React.useState(false)
+  const [snackBar2,setSnackBarValue2] = React.useState(false)
   const [redirectTo,setRedirectValue] = React.useState('/')
 
   const handleChange = (event, newValue) => {
@@ -108,6 +109,13 @@ const LoginPanel = () => {
   const handleSnackBarClose = (event) => {
     setSnackBarValue(false)
   }
+  const handleSnackBarSuccessOpen = (event) => {
+    setSnackBarValue2(true)
+  }
+  const handleSnackBarClose2 = (event) => {
+    setSnackBarValue2(false)
+  }
+
   const handleRedirectStudent = (event) => {
     setRedirectValue('/student')
   }
@@ -146,6 +154,36 @@ const LoginPanel = () => {
     }
     
   }
+
+  const submitSignupDetails = () => {
+    const email = document.getElementById('signup-email').value
+    const password = document.getElementById('signup-password').value    
+    const user_type = userValue
+    const permissionLevel = 1
+    const email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(email.length===0 || password.length===0 || !email_regex.test(email)) {
+      handleSnackBarOpen()
+      return
+    }
+    else {
+      axios.post('http://127.0.0.1:3001/users',
+        {
+          email: email, 
+          password: password,
+          permissionLevel: permissionLevel
+        })
+      .then(resp => {
+        console.log(resp)
+        handleSnackBarSuccessOpen()
+      })
+      .catch(err => {
+        console.log(err)
+        handleSnackBarOpen()
+      });
+    }
+    
+  }
+
   
   if(redirectTo === '/') {
   return (
@@ -159,7 +197,7 @@ const LoginPanel = () => {
             <TabPanel value={value} index={0}>
                 <form className={classes.formclass} noValidate autoComplete="off">    
                   <FormControl component="fieldset">
-                    <RadioGroup aria-label="gender" name="gender1" value={userValue} onChange={handleRadioChange} id="user">
+                    <RadioGroup aria-label="user" name="user1" value={userValue} onChange={handleRadioChange} id="user">
                         <FormControlLabel value="student" control={<Radio />} label="Student" />
                         <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                     </RadioGroup>
@@ -170,13 +208,23 @@ const LoginPanel = () => {
                 </form>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Tab 2
+                <form className={classes.formclass} noValidate autoComplete="off">    
+                  <Typography color="textSecondary" > * signup only allowed for students </Typography>
+                  <TextField className={classes.TextFieldClass} required id="signup-email" label="Email Id." variant="outlined"/>
+                  <TextField className={classes.TextFieldClass} required id="signup-password" label="Password" variant="outlined" type = "password"/>
+                  <Button className={classes.SubmitClass} variant='outlined' color='primary' onClick={() => submitSignupDetails()} >Sign up</Button>
+                </form>
             </TabPanel>
         
         </Card>
         <Snackbar open={snackBar} autoHideDuration={4000} onClose={handleSnackBarClose}>
           <Alert onClose={handleSnackBarClose} severity="error">
             Error in email or password
+          </Alert>
+        </Snackbar>
+        <Snackbar open={snackBar2} autoHideDuration={4000} onClose={handleSnackBarClose2}>
+          <Alert onClose={handleSnackBarClose2} severity="success">
+            Account Successfully created
           </Alert>
         </Snackbar>
     </div>  
