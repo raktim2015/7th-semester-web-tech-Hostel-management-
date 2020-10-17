@@ -119,24 +119,30 @@ const LoginPanel = () => {
 
   const submitLoginDetails = () => {
     const email = document.getElementById('email').value
-    const password = document.getElementById('password').value
+    const password = document.getElementById('password').value    
     const user_type = userValue
+    const permissionLevel = (user_type === 'admin')?0:1
     const email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(email.length===0 || password.length===0 || !email_regex.test(email)) {
       handleSnackBarOpen()
       return
     }
     else {
-      axios.get('https://api.github.com/users/mapbox')
-          .then(resp => {
-            if(user_type === 'student')
-              handleRedirectStudent()
-            else if(user_type === 'admin')
-              handleRedirectAdmin()
-          })
-          .catch(err => {
-            console.error(err)
-          });
+      axios.post('http://127.0.0.1:3001/login',
+        {
+          email: email, 
+          password: password,
+          permissionLevel: permissionLevel
+        })
+      .then(resp => {
+        if(user_type === 'student')
+          handleRedirectStudent()
+        else if(user_type === 'admin')
+          handleRedirectAdmin()
+      })
+      .catch(err => {
+        handleSnackBarOpen()
+      });
     }
     
   }
