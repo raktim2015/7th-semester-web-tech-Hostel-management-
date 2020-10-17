@@ -1,25 +1,27 @@
-const mongoose = require('mongoose')
-const config = require("../config/env.config.js")
-
-let count = 0
+const mongoose = require('mongoose');
+const config = require('./../../common/config/env.config')
+let count = 0;
 
 const options = {
-    autoIndex: false,
-    poolSize: 50,
+    autoIndex: false, // Don't build indexes
+    poolSize: 10, // Maintain up to 10 socket connections
+    // If not connected, return errors immediately rather than waiting for reconnect
     bufferMaxEntries: 0,
+    // all other approaches are now deprecated by MongoDB:
     useNewUrlParser: true,
     useUnifiedTopology: true
-}
-
+    
+};
 const connectWithRetry = () => {
-    console.log("MongoDB connecting..")
-    mongoose.connect(config.ATLAS_URI,options).then(()=> {
-        console.log("Connected")
-    }).catch(err=> {
-        console.log('Connection unsuccessful, retry after 5 seconds. ',++count)
-        setTimeout(connectWithRetry,5000)
+    console.log('MongoDB connection with retry')
+    mongoose.connect(config.LOCAL_URI, options).then(()=>{
+        console.log('MongoDB is connected')
+    }).catch(err=>{
+        console.log('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
+        setTimeout(connectWithRetry, 5000)
     })
-}
+};
 
-connectWithRetry()
+connectWithRetry();
+
 exports.mongoose = mongoose;
