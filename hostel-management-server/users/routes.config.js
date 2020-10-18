@@ -12,19 +12,16 @@ exports.routesConfig = function (app) {
         UsersController.insert
     ]);
     
-    app.get('/users', [
-        ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
-        UsersController.list
-    ]);
-    app.get('/users/:userId', [
+    app.get('/user', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(STUDENT),
-        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         UsersController.getById
     ]);
-    app.post('/login',[
-        UsersController.checkLogin
+
+    app.patch('/user',[
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.patchById
+
     ]);
 
     app.delete('/users/:userId', [

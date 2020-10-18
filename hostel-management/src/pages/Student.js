@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Grid,AppBar,Toolbar,Typography,Button, Stepper,Step,StepButton, TextField, MenuItem} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import StatusCard from '../components/StatusCard'; 
+import axios from 'axios';
+import {useAuth} from './../context/auth'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -102,16 +104,30 @@ const departments = [
 
 ];
 
-const Student = () => {
+const Student = (props) => {
     const classes = useStyles()
     const [activeStep, setActiveStep] = React.useState(0)
     const [completed, setCompleted] = React.useState(new Set())
     const [skipped, setSkipped] = React.useState(new Set())
     const [countryCode1,setCountryCode1] = React.useState('91')
     const [countryCode2,setCountryCode2] = React.useState('91')
+    const [userData, setUserData] = React.useState({})
+    
+    const authkey = useAuth().authTokens
+    axios.get('http://127.0.0.1:3001/user/', {
+        headers:{
+            authorization: authkey
+        }
+    })
+    .then((resp) => {
+        setUserData(resp.data[0])
+    })
+    .catch((error) => {
+        console.log(error)
+    })
     
     const steps = getSteps();
-
+    
     const totalSteps = () => {
         return getSteps().length;
     };
@@ -168,14 +184,25 @@ const Student = () => {
         const newCompleted = new Set(completed);
         newCompleted.add(activeStep);
         setCompleted(newCompleted);
+        
+        axios.patch('http://127.0.0.1:3001/user', {
+            headers:{
+                authorization: authkey
+            },
+            body:{
+                fname: "Raktim",
+                lname: "Malakar"
+            }
+        })
+        .then((res) => {
 
-        /**
-         * Sigh... it would be much nicer to replace the following if conditional with
-         * `if (!this.allStepsComplete())` however state is not set when we do this,
-         * thus we have to resort to not being very DRY.
-         */
+        })
+        .catch((error) => {
+
+        })
+
         if (completed.size !== totalSteps()) {
-        handleNext();
+            handleNext();
         }
     };
 
@@ -232,7 +259,7 @@ const Student = () => {
                             <TextField className={classes.TextFieldClass} required id="lname" label="Last Name" variant="outlined"/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
-                            <TextField className={classes.TextFieldClass} required id="email" label="Email" variant="outlined" value="raktimmalakar2015@gmail.com" disabled/>
+                            <TextField className={classes.TextFieldClass} required id="email"  variant="outlined" value={userData.email} disabled/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5} >
                             <TextField className={classes.TextFieldClass} id="altEmail" label="Alternate Email" variant="outlined"/>

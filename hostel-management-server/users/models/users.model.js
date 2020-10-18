@@ -5,8 +5,12 @@ const userSchema = new Schema({
     fname: {type: String},
     lname: {type: String},
     email: {type: String, unique: true, required: true, dropDups: true},
-    password: {type: String},
+    password: {type: String, required: true},
+    enrollId: {type: String, unique: true},
+    dept: {type: String},
+    submittedStatus: {type: Number},
     permissionLevel: {type: Number}
+
 });
 
 userSchema.virtual('id').get(function () {
@@ -64,9 +68,9 @@ exports.list = (perPage, page) => {
     });
 };
 
-exports.patchUser = (id, userData) => {
+exports.patchUser = (email, userData) => {
     return User.findOneAndUpdate({
-        _id: id
+        email: email
     }, userData);
 };
 

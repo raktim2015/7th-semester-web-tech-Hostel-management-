@@ -28,6 +28,9 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
             if(!user[0]){
                 res.status(404).send({});
             }else{
+                if(user[0].permissionLevel !== req.body.permissionLevel) {
+                    return res.status(400).send({errors: ['Invalid e-mail or password']});
+                }
                 let passwordFields = user[0].password.split('$');
                 let salt = passwordFields[0];
                 let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");

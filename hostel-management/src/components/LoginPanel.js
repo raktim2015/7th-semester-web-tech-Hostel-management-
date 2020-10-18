@@ -7,6 +7,7 @@ import {Tabs,Tab,Typography,Box,Card,TextField,Button,FormControl,Radio, RadioGr
 import {Link,Redirect} from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
+import {useAuth} from './../context/auth.js'
 
 
 function TabPanel(props) {
@@ -96,6 +97,8 @@ const LoginPanel = () => {
   const [snackBar,setSnackBarValue] = React.useState(false)
   const [snackBar2,setSnackBarValue2] = React.useState(false)
   const [redirectTo,setRedirectValue] = React.useState('/')
+  const [emailId, setEmailID] = React.useState('')
+  const { setAuthTokens } = useAuth();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -117,11 +120,13 @@ const LoginPanel = () => {
   }
 
   const handleRedirectStudent = (event) => {
+    
     setRedirectValue('/student')
   }
   
   const handleRedirectAdmin = (event) => {
     setRedirectValue('/admin')
+    
   }
 
 
@@ -136,17 +141,23 @@ const LoginPanel = () => {
       return
     }
     else {
-      axios.post('http://127.0.0.1:3001/login',
+      axios.post('http://127.0.0.1:3001/auth',
         {
           email: email, 
           password: password,
           permissionLevel: permissionLevel
         })
       .then(resp => {
+        setEmailID(email)
+        setAuthTokens(resp.data.accessToken)
         if(user_type === 'student')
+        {
           handleRedirectStudent()
+        }
         else if(user_type === 'admin')
+        {
           handleRedirectAdmin()
+        }
       })
       .catch(err => {
         handleSnackBarOpen()
@@ -173,11 +184,9 @@ const LoginPanel = () => {
           permissionLevel: permissionLevel
         })
       .then(resp => {
-        console.log(resp)
         handleSnackBarSuccessOpen()
       })
       .catch(err => {
-        console.log(err)
         handleSnackBarOpen()
       });
     }
@@ -231,13 +240,18 @@ const LoginPanel = () => {
   );
   }
   else if(redirectTo === '/student') {
+    console.log("email id ",emailId)
     return(
-      <Redirect to = {redirectTo} />
+      <Redirect to = {{
+          pathname: redirectTo,
+          state: { email: emailId }
+        }
+      }  />
     )
   }
   else if(redirectTo === '/admin') {
     return(
-      <Redirect to = {redirectTo} />
+      <Redirect to = {redirectTo} email={emailId} />
     )
   }
 }
