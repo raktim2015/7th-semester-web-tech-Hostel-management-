@@ -5,7 +5,21 @@ exports.insert = (req, res) => {
     let salt = crypto.randomBytes(16).toString('base64');
     let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
     req.body.password = salt + "$" + hash;
-
+    req.body.fname = '';
+    req.body.lname = '';
+    req.body.altEmail = '';
+    req.body.enrollId = '';
+    req.body.dept = '';
+    req.body.code1 = '';
+    req.body.phno1 = '';
+    req.body.code2 = '';
+    req.body.phno2 = '';
+    req.body.country = '';
+    req.body.state = '';
+    req.body.address1 = '';
+    req.body.address2 = '';
+    req.submittedStatus = 1;
+    
     UserModel.createUser(req.body)
     .then((result) => {
         res.status(201).send({id: result._id});
@@ -13,7 +27,6 @@ exports.insert = (req, res) => {
 };
 
 exports.checkDuplicates = (req,res,next) => {
-    
     UserModel.findByEmail(req.body.email)
     .then((result) => {
         if(result.length > 0) 
@@ -55,13 +68,14 @@ exports.getById = (req, res) => {
 };
 
 exports.patchById = (req, res) => {
-    
-    console.log(req.body)
-    
     UserModel.patchUser(req.params.email, req.body)
         .then((result) => {
+            console.log(result)
             res.status(204).send({});
-        });
+        })
+        .catch((err) => {
+            res.status(404).send();
+        })
 
 };
 

@@ -5,12 +5,20 @@ const userSchema = new Schema({
     fname: {type: String},
     lname: {type: String},
     email: {type: String, unique: true, required: true, dropDups: true},
-    password: {type: String, required: true},
-    enrollId: {type: String, unique: true},
+    altEmail: {type: String, unique: true, dropDups: true},
+    password: {type: String},
+    code1: {type: String},
+    phno1: {type: String},
+    code2: {type: String},
+    phno2: {type: String},
+    country: {type: String},
+    state: {type: String},
+    address1: {type: String},
+    address2: {type: String},
+    enrollId: {type: String},
     dept: {type: String},
     submittedStatus: {type: Number},
     permissionLevel: {type: Number}
-
 });
 
 userSchema.virtual('id').get(function () {

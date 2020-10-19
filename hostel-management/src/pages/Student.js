@@ -105,26 +105,33 @@ const departments = [
 ];
 
 const Student = (props) => {
+    
     const classes = useStyles()
     const [activeStep, setActiveStep] = React.useState(0)
     const [completed, setCompleted] = React.useState(new Set())
     const [skipped, setSkipped] = React.useState(new Set())
     const [countryCode1,setCountryCode1] = React.useState('91')
     const [countryCode2,setCountryCode2] = React.useState('91')
+    const [dept, setDept] = React.useState()
     const [userData, setUserData] = React.useState({})
     
     const authkey = useAuth().authTokens
-    axios.get('http://127.0.0.1:3001/user/', {
-        headers:{
-            authorization: authkey
-        }
-    })
-    .then((resp) => {
-        setUserData(resp.data[0])
-    })
-    .catch((error) => {
-        console.log(error)
-    })
+
+    React.useEffect(() => {
+        axios.get('http://127.0.0.1:3001/user/', {
+            headers:{
+                authorization: authkey
+            }
+        })
+        .then((resp) => {
+            setUserData(resp.data[0])
+            
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    },[])
+    
     
     const steps = getSteps();
     
@@ -134,11 +141,25 @@ const Student = (props) => {
 
     const handleCountryCode1 = (event) => {
         setCountryCode1(event.target.value)
+        setUserData({
+            ...userData,
+            code1: event.target.value
+        })
     };
     const handleCountryCode2 = (event) => {
         setCountryCode2(event.target.value)
+        setUserData({
+            ...userData,
+            code2: event.target.value
+        })
     };
-    
+    const handleDept = (event) => {
+        setDept(event.target.value)
+        setUserData({
+            ...userData,
+            dept: event.target.value
+        })
+    }
 
     const handleSkip = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -172,6 +193,70 @@ const Student = (props) => {
         setActiveStep(newActiveStep);
     };
 
+    const onDataChange = (event) => {
+        if(event === 'fname') {
+            setUserData({
+                ...userData,
+                fname: document.getElementById('fname').value
+            })
+        }
+        else if(event === 'lname') {
+            setUserData({
+                ...userData,
+                lname: document.getElementById('lname').value
+            })
+        }
+        else if(event === 'altEmail') {
+            setUserData({
+                ...userData,
+                altEmail: document.getElementById('altEmail').value
+            })
+        }
+        else if(event === 'phno1') {
+            setUserData({
+                ...userData,
+                phno1: document.getElementById('phno1').value
+            })
+        }
+        else if(event === 'phno2') {
+            setUserData({
+                ...userData,
+                phno2: document.getElementById('phno2').value
+            })
+        }
+        else if(event === 'country') {
+            setUserData({
+                ...userData,
+                country: document.getElementById('country').value
+            })
+        }
+        else if(event === 'state') {
+            setUserData({
+                ...userData,
+                state: document.getElementById('state').value
+            })
+        }
+        else if(event === 'address1') {
+            setUserData({
+                ...userData,
+                address1: document.getElementById('address1').value
+            })
+        }
+        else if(event === 'address2') {
+            setUserData({
+                ...userData,
+                address2: document.getElementById('address2').value
+            })
+        }
+        else if(event === 'enrollId') {
+            setUserData({
+                ...userData,
+                enrollId: document.getElementById('enrollId').value
+            })
+        }
+        
+    }
+
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
@@ -185,21 +270,15 @@ const Student = (props) => {
         newCompleted.add(activeStep);
         setCompleted(newCompleted);
         
-        axios.patch('http://127.0.0.1:3001/user', {
-            headers:{
-                authorization: authkey
-            },
-            body:{
-                fname: "Raktim",
-                lname: "Malakar"
-            }
-        })
-        .then((res) => {
+        const body = userData
+        const options = {
+            headers: {'authorization': authkey}
+          };
+        //console.log(body)
 
-        })
-        .catch((error) => {
-
-        })
+        axios.patch('http://127.0.0.1:3001/user', body, options)
+        .then((res)=>console.log(res))
+        .catch(() => {})
 
         if (completed.size !== totalSteps()) {
             handleNext();
@@ -253,21 +332,21 @@ const Student = (props) => {
                         
                         <Grid container spacing={0} className={classes.infoContainer}>
                         <Grid item xs={12} md={5} sm={5}>
-                            <TextField className={classes.TextFieldClass} required id="fname" label="First Name" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="fname" variant="outlined" label="First name" value={userData.fname || ''} onChange={() => onDataChange("fname")}/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5} >
-                            <TextField className={classes.TextFieldClass} required id="lname" label="Last Name" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="lname" variant="outlined" label="Last name" value={userData.lname || ''} onChange={() => onDataChange("lname")}/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
-                            <TextField className={classes.TextFieldClass} required id="email"  variant="outlined" value={userData.email} disabled/>
+                            <TextField className={classes.TextFieldClass} required id="email"  label="Email Id" variant="outlined" value={userData.email || ''} disabled/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5} >
-                            <TextField className={classes.TextFieldClass} id="altEmail" label="Alternate Email" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} id="altEmail" label="Alternate Email" variant="outlined" value={userData.altEmail || ''} onChange={() => onDataChange("altEmail")}/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
                             <Grid container spacing={0}>
                                 <Grid item xs={5} md={5} sm={5} >
-                                    <TextField select required className={classes.TextFieldClass} value={countryCode1} onChange={handleCountryCode1} id="code1" label="Code" variant="outlined">
+                                    <TextField select required className={classes.TextFieldClass} value={countryCode1} onChange={handleCountryCode1} value={userData.code1 || ''} id="code1" label="Code" variant="outlined" >
                                         {countryCodes.map((option)=>(
                                             <MenuItem key={option.value} value={option.value}>
                                                 {option.label}
@@ -276,14 +355,14 @@ const Student = (props) => {
                                     </TextField>
                                 </Grid>
                                 <Grid item xs={7} md={7} sm={7} >
-                                    <TextField required className={classes.TextFieldClass} id="phno1" label="Phone no." variant="outlined"/>
+                                    <TextField required className={classes.TextFieldClass} id="phno1" label="Phone no." variant="outlined" value={userData.phno1 || ''} onChange={() => onDataChange("phno1")}/>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
                             <Grid container spacing={0}>
                                 <Grid item xs={5} md={5} sm={5} >
-                                    <TextField select className={classes.TextFieldClass} value={countryCode2} onChange={handleCountryCode2} id="code2" label="Code" variant="outlined">
+                                    <TextField select className={classes.TextFieldClass} value={countryCode2} onChange={handleCountryCode2} value={userData.code2 || ''} id="code2" label="Code" variant="outlined">
                                         {countryCodes.map((option)=>(
                                             <MenuItem key={option.value} value={option.value}>
                                                 {option.label}
@@ -292,21 +371,21 @@ const Student = (props) => {
                                     </TextField>
                                 </Grid>
                                 <Grid item xs={7} md={7} sm={7} >
-                                    <TextField className={classes.TextFieldClass} id="phno2" label="Alternate phone no." variant="outlined"/>
+                                    <TextField className={classes.TextFieldClass} id="phno2" label="Alternate phone no." value={userData.phno2 || ''} variant="outlined" onChange={() => onDataChange("phno2")}/>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
-                            <TextField className={classes.TextFieldClass} required id="country" label="Country" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="country" label="Country" variant="outlined" value={userData.country || ''} onChange={() => onDataChange("country")}/>
                         </Grid>
                         <Grid item xs={12} md={5} sm={5}>
-                            <TextField className={classes.TextFieldClass} required id="state" label="State" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="state" label="State" variant="outlined" value={userData.state || ''} onChange={() => onDataChange("state")}/>
                         </Grid>
                         <Grid item xs={12} md={10} sm={10}>
-                            <TextField className={classes.TextFieldClass} required id="address1" label="Address Line 1" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="address1" label="Address Line 1" variant="outlined" value={userData.address1 || ''} onChange={() => onDataChange("address1")}/>
                         </Grid>
                         <Grid item xs={12} md={10} sm={10}>
-                            <TextField className={classes.TextFieldClass} required id="address2" label="Address Line 2" variant="outlined"/>
+                            <TextField className={classes.TextFieldClass} required id="address2" label="Address Line 2" variant="outlined" value={userData.address2 || ''} onChange={() => onDataChange("address2")}/>
                         </Grid>
                         <Grid item sm={3} xs={5} md={3}>
                             <Button
@@ -335,10 +414,10 @@ const Student = (props) => {
                     (
                         <Grid container spacing={0} className={classes.infoContainer}>
                             <Grid item sm={12} xs={5} md={5}>
-                                <TextField className={classes.TextFieldClass} required id="enrollId" label="Enrollment Id" variant="outlined"/>
+                                <TextField className={classes.TextFieldClass} required id="enrollId" label="Enrollment Id" variant="outlined" value={userData.enrollId || ''} onChange={() => onDataChange("enrollId")}/>
                             </Grid>
                             <Grid item sm={12} xs={5} md={5}>
-                                <TextField select className={classes.TextFieldClass} required id="dept" label="Department" variant="outlined" >
+                                <TextField select className={classes.TextFieldClass} required id="dept" label="Department" variant="outlined" value={userData.dept || ''} onChange={handleDept}>
                                     {departments.map((option)=>(
                                         <MenuItem key={option.value} value={option.value}>
                                             {option.label}
