@@ -307,7 +307,7 @@ const Student = (props) => {
                 </AppBar>
             </Grid>
             <Grid item xs={12} sm={12} md={12} className={classes.hostelStatus}>
-                <StatusCard />
+                <StatusCard submittedStatus = {userData.submittedStatus} />
             </Grid>
             <Grid item xs={12} sm={12} md={12} className={classes.profileContainer}>
                 <Grid item xs={12} sm={6} md={6}>

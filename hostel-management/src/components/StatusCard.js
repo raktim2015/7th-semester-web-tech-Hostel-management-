@@ -16,7 +16,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Chip from '@material-ui/core/Chip';
 import {Timeline,TimelineConnector,TimelineContent,TimelineDot,TimelineItem,TimelineSeparator,TimelineOppositeContent} from '@material-ui/lab';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 400,
@@ -44,20 +43,42 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const StatusCard = () => {
+const statusContents = [
+  {
+    statusHeader : "Registered",
+    statusDetails : "You have successfully registered.",
+    styling : 'lightBlue'
+  },
+  {
+    statusHeader : "Submitted",
+    statusDetails : "You have successfully submitted your profile information. Please wait a few days for verification."
+  },
+  {
+    statusHeader : "Verified",
+    statusDetails : "You profile has been verified."
+  },
+  {
+    statusHeader : "Allotted / Rejected",
+    statusDetails : ""
+  }
+
+]
+
+const StatusCard = (props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  console.log(" submitted ", props.submittedStatus)
 
+  
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
+  console.log(props.submittedStatus)
   return (
     <Card className={classes.root}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
           </Avatar>
         }
         action={
@@ -73,7 +94,7 @@ const StatusCard = () => {
         <Typography variant="body2" color="textSecondary" component="p">
           Current allotment status
         </Typography>
-        <Chip label="Submitted" style={{backgroundColor:'lightGreen',marginTop:2,marginBottom:2}}/>
+        <Chip label={(props.submittedStatus-1 >= 0)?(statusContents[props.submittedStatus-1].statusHeader):' '} style={{backgroundColor:'lightgreen', marginTop:2, marginBottom:2}}/>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
@@ -97,58 +118,43 @@ const StatusCard = () => {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
             <Timeline align="left">
-                <TimelineItem>
-                    <TimelineOppositeContent className={classes.timeLineOpposite}>
-                    </TimelineOppositeContent>
-                    <TimelineSeparator >
-                        <TimelineDot style={{backgroundColor:'dodgerblue'}}/>
-                        <TimelineConnector style={{backgroundColor:'dodgerblue'}}/>
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      Registered
-                      <Typography variant="body2" color="textSecondary">
-                        You have successfully registered.
-                      </Typography>
-                    </TimelineContent>
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineOppositeContent className={classes.timeLineOpposite}>
-                    </TimelineOppositeContent>
-                    <TimelineSeparator >
-                        <TimelineDot style={{backgroundColor:'dodgerblue'}} />
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      Submitted
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        You have successfully submitted your profile information. Please wait a few days for verification.
-                      </Typography>
-                    </TimelineContent>
-                    
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineOppositeContent className={classes.timeLineOpposite}>
-                    </TimelineOppositeContent>
-                    <TimelineSeparator >
-                        <TimelineDot />
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      Verified
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        You profile has been verified.
-                      </Typography>
-                    </TimelineContent>
-                    
-                </TimelineItem>
-                <TimelineItem>
-                    <TimelineOppositeContent className={classes.timeLineOpposite}>
-                    </TimelineOppositeContent>
-                    <TimelineSeparator>
-                        <TimelineDot />
-                    </TimelineSeparator>
-                    <TimelineContent>Allotted / Rejected</TimelineContent>
-                </TimelineItem>
+                {
+                  statusContents.map((data,index) => (
+                    (index+1 <= props.submittedStatus)?(
+                    <TimelineItem>
+                      <TimelineOppositeContent className={classes.timeLineOpposite}>
+                      </TimelineOppositeContent>
+                      <TimelineSeparator >
+                          <TimelineDot style={{backgroundColor:'dodgerblue'}}/>
+                          {(index+1 < statusContents.length)?(<TimelineConnector style={{backgroundColor:'dodgerblue'}}/>):
+                          <span></span>}
+
+                      </TimelineSeparator>
+                      <TimelineContent>
+                        {data.statusHeader}
+                        <Typography variant="body2" color="textSecondary">
+                          {data.statusDetails}
+                        </Typography>
+                      </TimelineContent>
+                    </TimelineItem>):(
+                      <TimelineItem>
+                      <TimelineOppositeContent className={classes.timeLineOpposite}>
+                      </TimelineOppositeContent>
+                      <TimelineSeparator >
+                          <TimelineDot />
+                          {(index+1 < statusContents.length)?(<TimelineConnector/>):
+                          <span></span>}
+                      </TimelineSeparator>
+                      <TimelineContent>
+                        {data.statusHeader}
+                        <Typography variant="body2" color="textSecondary">
+                          {data.statusDetails}
+                        </Typography>
+                      </TimelineContent>
+                    </TimelineItem>
+                    )    
+                  ))
+                }
             </Timeline>
         </CardContent>
       </Collapse>

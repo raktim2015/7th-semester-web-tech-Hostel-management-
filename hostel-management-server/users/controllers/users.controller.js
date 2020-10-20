@@ -18,7 +18,9 @@ exports.insert = (req, res) => {
     req.body.state = '';
     req.body.address1 = '';
     req.body.address2 = '';
-    req.submittedStatus = 1;
+    req.body.submittedStatus = 1;
+
+    console.log(req.body)
     
     UserModel.createUser(req.body)
     .then((result) => {
