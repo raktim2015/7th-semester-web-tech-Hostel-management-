@@ -8,7 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
 import TableTileSubmitted from './TableTileSubmitted'
+import TableTileVerified from './TableTileVerified'
+import TableTileRejected from './TableTileRejected'
+import TableTileAccepted from './TableTileAccepted'
 import UserData from './../data/userData.json'
+
 
 /* Create data to pass to table */
 
@@ -95,13 +99,13 @@ const AdminDashboard = () => {
               <TableTileSubmitted data = {UserData} />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-            Item Two
+            <TableTileVerified data = {UserData} />
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
-            Item Three
+              <TableTileAccepted data={UserData} />
             </TabPanel>
             <TabPanel value={value} index={3} dir={theme.direction}>
-            Item Four
+              <TableTileRejected data = {UserData} />
             </TabPanel>
         
         </div>

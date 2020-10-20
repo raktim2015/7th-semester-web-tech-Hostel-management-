@@ -17,11 +17,22 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(STUDENT),
         UsersController.getById
     ]);
+    app.get('/allUsers',[
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        UsersController.list    
+    ]);
 
     app.patch('/user',[
         ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(STUDENT),
         UsersController.patchById
 
+    ]);
+    app.patch('/patchStatus',[
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        UsersController.patchAllStatus
     ]);
 
     app.delete('/users/:userId', [

@@ -3,7 +3,7 @@ import {Grid} from '@material-ui/core';
 import AdminDrawerMenu from '../components/AdminDrawerMenu';
 const Admin = () => {
     return (
-        <Grid conatiner>
+        <Grid>
             <AdminDrawerMenu />
         </Grid>
     );

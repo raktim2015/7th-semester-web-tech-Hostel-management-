@@ -4,9 +4,17 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 
+    container:{
+        display:'flex',
+        justifyContent:'center'
+    },
     root:{
+        display:'flex',
         backgroundColor:'#ffffff',
-        color:'black'
+        color:'#000000',
+        minHeight:500,
+        overflow:'scroll'
+
     },
 
 }));
@@ -14,10 +22,12 @@ const DetailsInfo = (props) => {
 
     const classes = useStyles();
     return (
-       <Grid container className={classes.root}>
-           <Grid item xs={12} sm={6} md={6} >
-               {props.information.fname} &emsp; {props.information.lname}
-           </Grid>
+       <Grid container spacing={0} className={classes.container}>
+           
+            <Grid item xs={6} sm={6} md={6} className={classes.root}>
+                {props.information.fname}<br/>{props.information.lname}
+            </Grid>
+           
        </Grid>
        
     );
