@@ -20,7 +20,7 @@ exports.insert = (req, res) => {
     req.body.address2 = '';
     req.body.submittedStatus = 1;
 
-    console.log(req.body)
+    
     
     UserModel.createUser(req.body)
     .then((result) => {

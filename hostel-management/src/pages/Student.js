@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import {Grid,AppBar,Toolbar,Typography,Button, Stepper,Step,StepButton, TextField, MenuItem} from '@material-ui/core';
+import {Grid,AppBar,Toolbar,Typography,Button, Stepper,Step,StepButton, TextField, MenuItem, Checkbox, FormControlLabel} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import StatusCard from '../components/StatusCard'; 
 import axios from 'axios';
 import {useAuth} from './../context/auth'
+import CheckIcon from '@material-ui/icons/Check';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,6 +40,17 @@ const useStyles = makeStyles((theme) => ({
         display:'flex',
         justifyContent:'center',
         
+    },
+    submitChip:{
+        backgroundColor:'lightblue',
+        borderRadius:10, 
+        paddingTop:15, 
+        paddingBottom:15, 
+        paddingLeft:10,
+        paddingRight:10,
+        textAlign:'center',
+        marginTop:10,
+        marginBottom:10
     }
 }));
 
@@ -114,8 +127,14 @@ const Student = (props) => {
     const [countryCode2,setCountryCode2] = React.useState('91')
     const [dept, setDept] = React.useState()
     const [userData, setUserData] = React.useState({})
+    const [submitCheck, setsubmitCheck] = React.useState(false)
+    const [submitButtonDisabled, setSubmitButtonDisabled] = React.useState(false)
     
     const authkey = useAuth().authTokens
+    const body = userData
+    const options = {
+        headers: {'authorization': authkey}
+        };
 
     React.useEffect(() => {
         axios.get('http://127.0.0.1:3001/user/', {
@@ -125,7 +144,12 @@ const Student = (props) => {
         })
         .then((resp) => {
             setUserData(resp.data[0])
-            
+            if(resp.data[0].submittedStatus>1) {
+                setSubmitButtonDisabled(true)
+            }
+            else {
+                setSubmitButtonDisabled(false)
+            }
         })
         .catch((error) => {
             console.log(error)
@@ -192,6 +216,17 @@ const Student = (props) => {
 
         setActiveStep(newActiveStep);
     };
+
+    const handleSubmit = () => {
+        if(submitCheck) {
+            axios.patch('http://127.0.0.1:3001/user', {submittedStatus:2}, options)
+            .then((res)=>console.log(res))
+            .catch(() => {})
+        }
+        else { 
+            //error handling snackbar
+        }
+    }
 
     const onDataChange = (event) => {
         if(event === 'fname') {
@@ -270,10 +305,7 @@ const Student = (props) => {
         newCompleted.add(activeStep);
         setCompleted(newCompleted);
         
-        const body = userData
-        const options = {
-            headers: {'authorization': authkey}
-          };
+        
         //console.log(body)
 
         axios.patch('http://127.0.0.1:3001/user', body, options)
@@ -451,8 +483,46 @@ const Student = (props) => {
                         </Grid>
                         
                     ):
-                    ((activeStep==2)?(
-                        <Grid item>Upload Documents</Grid>):(<Grid item >Submit Docuements</Grid>)
+                    ((activeStep==2)?
+                    (<Grid item>Upload Documents</Grid>):
+                        
+                        (
+                            <div>
+                                <Grid container spacing={0} className={classes.infoContainer}>
+                                    <Grid item xs={10} className={classes.submitChip}>
+                                        <Typography variant="body2" style={{fontSize:16}}>
+                                            Do you want to submit your information? Once submitted, the changes cannot be modified. Please verify your information before making the final submission.
+                                        </Typography>
+                                        <FormControlLabel
+                                            style={{alignSelf:'left'}}
+                                            control={
+                                            <Checkbox
+                                                checked={submitCheck}
+                                                onChange={() => setsubmitCheck(!submitCheck)}
+                                                name="checkedB"
+                                                color="primary"
+                                            />
+                                            }
+                                            label="I agree to the above terms and conditions"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={10} style={{textAlign:'right'}} >
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        className={classes.button}
+                                        startIcon={<CheckIcon />}
+                                        onClick = {handleSubmit}
+                                        disabled = {submitButtonDisabled}
+                                    >
+                                    Agree and submit
+                                    </Button>
+                                    </Grid>
+                                    
+                                </Grid>
+                                
+                            </div>
+                        )
                     ))}
                     
                 </Grid>
