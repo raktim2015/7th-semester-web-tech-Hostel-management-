@@ -24,15 +24,15 @@ import {useAuth} from './../context/auth';
 import axios from 'axios';
 
 function createData(eid, fname, lname, dept, details, email, status) {
-  return { eid, fname, lname, dept, details, email, status};
-}
+    return { eid, fname, lname, dept, details, email, status};
+  }
 
 
 
-const populateRows = (data) => {
+const populateRowsSubmitted = (data) => {
   
   let temprows = []
-  const filterRows = data.filter((obj) => obj.submittedStatus===2)
+  const filterRows = data.filter((obj) => obj.submittedStatus===5)
   temprows = filterRows.map((obj) => {return createData(obj.enrollId, obj.fname, obj.lname, obj.dept, "View full profile", obj.email, obj.submittedStatus)})
   return temprows
 }
@@ -158,14 +158,14 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected &emsp;
-          <Chip label="Verify" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}} onClick={props.onVerify}/> &emsp;  
-          <Chip label="Reject" variant="outlined" color="secondary" style={{marginTop:2,marginBottom:2}} onClick={props.onReject}/>&emsp;
-          <Chip label="Accept" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}} onClick={props.onAccept}/> &emsp;
+          <Chip label="Revert to submit" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}} onClick={props.onSubmit}/> &emsp;  
+          <Chip label="Revert to Verify" variant="outlined" color="secondary" style={{marginTop:2,marginBottom:2}} onClick={props.onVerify}/>&emsp;
+          <Chip label="Accept" variant="outlined" color="primary" style={{marginTop:2,marginBottom:2}} onClick = {props.onAccept} /> &emsp;
         </Typography>
         
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Submitted Applicants
+          Rejected Applicants
         </Typography>
       )}
 
@@ -218,7 +218,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TableTileSubmitted = (props) => {
+const TableTileRejected = (props) => {
 
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -228,7 +228,7 @@ const TableTileSubmitted = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [backdropOpen,setBackdrop] = React.useState(false);
   const [currentClicked, setCurrentClicked] = React.useState({});
-  const [rows, setRows] = React.useState(populateRows(props.data));
+  const [rows, setRows] = React.useState(populateRowsSubmitted(props.data));
   
   const authkey = useAuth().authTokens
   const options = {
@@ -239,7 +239,12 @@ const TableTileSubmitted = (props) => {
 
     axios.get('http://127.0.0.1:3001/allUsers',options)
     .then((result) => {
-      setRows(populateRows(result.data))
+
+      //populateRowsSubmitted(result.data)
+      console.log("result data " , result.data)
+      console.log("props data " , props.data)
+      setRows(populateRowsSubmitted(result.data))
+
     })
     .catch((err) => {
       console.log(err)
@@ -309,38 +314,7 @@ const TableTileSubmitted = (props) => {
     setPage(0);
   };
 
-  const handleVerify = () => {
-      
-      /*  get the selected elements and mark them verified, save the data in database
-          Update data in server.
-          If successfull change the selected status, populateRows(newData)
-      */
-
-      let temprows = [];
-      let eidMappedtoIndex = {}
-      let selectedEmailList = []
-      rows.forEach((row,index)=> {
-        eidMappedtoIndex[row.eid] = index
-      })
-      
-      selected.forEach((elem) => {
-        rows[eidMappedtoIndex[elem]].submittedStatus = 3
-        selectedEmailList.push(rows[eidMappedtoIndex[elem]].email)
-      });
-      rows.forEach((row) => {
-        if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==3) {
-          temprows.push(row)
-        }
-      });
-
-      setSelected([])
-      handleRowChange(temprows)
-      
-      axios.patch('http://127.0.0.1:3001/patchStatus/', {selectedEmailList,submittedStatus:3}, options)
-      .then(()=>{})
-      .catch(() => {})
-  }
-  const handleReject = () => {
+  const handleSubmit = () => {
       
     /*  get the selected elements and mark them verified, save the data in database
         Update data in server.
@@ -354,19 +328,50 @@ const TableTileSubmitted = (props) => {
       eidMappedtoIndex[row.eid] = index
     })
     selected.forEach((elem) => {
-      rows[eidMappedtoIndex[elem]].submittedStatus = 5
+      rows[eidMappedtoIndex[elem]].submittedStatus = 2
       selectedEmailList.push(rows[eidMappedtoIndex[elem]].email)
       
     })
     rows.forEach((row) => {
-      if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==5) {
-        temprows.push(row)
-      }
+        if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==2) {
+          temprows.push(row)
+        }
+      });
+    setSelected([])
+    handleRowChange(temprows)
+    console.log(selectedEmailList)
+    axios.patch('http://127.0.0.1:3001/patchStatus/', {selectedEmailList,submittedStatus:2}, options)
+    .then(()=>{})
+    .catch(() => {})
+  }
+
+  const handleVerify = () => {
+      
+    /*  get the selected elements and mark them verified, save the data in database
+        Update data in server.
+        If successfull change the selected status, populateRows(newData)
+    */
+
+    let temprows = [];
+    let eidMappedtoIndex = {}
+    let selectedEmailList = []
+    rows.forEach((row,index)=> {
+      eidMappedtoIndex[row.eid] = index
+    })
+    selected.forEach((elem) => {
+      rows[eidMappedtoIndex[elem]].submittedStatus = 3
+      selectedEmailList.push(rows[eidMappedtoIndex[elem]].email)
+      
+    })
+    rows.forEach((row) => {
+        if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==3) {
+            temprows.push(row)
+        }
     });
     setSelected([])
     handleRowChange(temprows)
     
-    axios.patch('http://127.0.0.1:3001/patchStatus/', {selectedEmailList,submittedStatus:5}, options)
+    axios.patch('http://127.0.0.1:3001/patchStatus/', {selectedEmailList,submittedStatus:3}, options)
     .then(()=>{})
     .catch(() => {})
   } 
@@ -387,20 +392,20 @@ const TableTileSubmitted = (props) => {
     selected.forEach((elem) => {
       rows[eidMappedtoIndex[elem]].submittedStatus = 4
       selectedEmailList.push(rows[eidMappedtoIndex[elem]].email)
-    });
+      
+    })
     rows.forEach((row) => {
-      if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==4) {
-        temprows.push(row)
-      }
-    });
-
+        if(rows[eidMappedtoIndex[row.eid]].submittedStatus!==4) {
+          temprows.push(row)
+        }
+      });
     setSelected([])
     handleRowChange(temprows)
     
     axios.patch('http://127.0.0.1:3001/patchStatus/', {selectedEmailList,submittedStatus:4}, options)
     .then(()=>{})
     .catch(() => {})
-  } 
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -408,7 +413,7 @@ const TableTileSubmitted = (props) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} onVerify={handleVerify} onReject={handleReject} onAccept={handleAccept} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} onVerify={handleVerify} onAccept={handleAccept} onSubmit={handleSubmit} />
         <TableContainer style={{maxHeight:400}}>
           <Table
             className={classes.table}
@@ -490,4 +495,4 @@ const TableTileSubmitted = (props) => {
   );
 }
 
-export default TableTileSubmitted;
+export default TableTileRejected;

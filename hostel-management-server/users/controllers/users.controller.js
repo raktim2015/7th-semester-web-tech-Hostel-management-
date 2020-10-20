@@ -45,15 +45,8 @@ exports.checkDuplicates = (req,res,next) => {
 }
 
 exports.list = (req, res) => {
-    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
-    let page = 0;
-    if (req.query) {
-        if (req.query.page) {
-            req.query.page = parseInt(req.query.page);
-            page = Number.isInteger(req.query.page) ? req.query.page : 0;
-        }
-    }
-    UserModel.list(limit, page)
+    
+    UserModel.list()
         .then((result) => {
             res.status(200).send(result);
         })
@@ -78,6 +71,18 @@ exports.patchById = (req, res) => {
         .catch((err) => {
             res.status(404).send();
         })
+
+};
+
+exports.patchAllStatus = (req, res) => {
+    req.body.selectedEmailList.map((email) => {
+        UserModel.patchUser(email,{submittedStatus: req.body.submittedStatus})
+        .then((result) => {
+        })
+        .catch(()=>{
+            console.log("error")
+        })
+    })
 
 };
 

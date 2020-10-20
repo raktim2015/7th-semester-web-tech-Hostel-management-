@@ -28,13 +28,10 @@ exports.validRefreshNeeded = (req, res, next) => {
 
 exports.validJWTNeeded = (req, res, next) => {
     
-    console.log("here" , req.headers['authorization'])
     if (req.headers['authorization']) {
-        console.log(req.body)
         let authorization = req.headers['authorization']
         req.jwt = jwt.verify(authorization, secret);
         req.params.email = req.jwt.email
-        
         return next();
     }
     else{

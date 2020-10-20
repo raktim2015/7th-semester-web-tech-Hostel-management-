@@ -61,11 +61,9 @@ exports.createUser = (userData) => {
     return user.save();
 };
 
-exports.list = (perPage, page) => {
+exports.list = () => {
     return new Promise((resolve, reject) => {
         User.find()
-            .limit(perPage)
-            .skip(perPage * page)
             .exec(function (err, users) {
                 if (err) {
                     reject(err);
