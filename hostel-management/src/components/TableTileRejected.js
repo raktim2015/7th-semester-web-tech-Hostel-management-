@@ -222,14 +222,15 @@ const TableTileRejected = (props) => {
 
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('eid');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [backdropOpen,setBackdrop] = React.useState(false);
   const [currentClicked, setCurrentClicked] = React.useState({});
   const [rows, setRows] = React.useState(populateRowsSubmitted(props.data));
-  
+  const [allData,setAllData] = React.useState([])
+
   const authkey = useAuth().authTokens
   const options = {
       headers: {'authorization': authkey}
@@ -239,12 +240,8 @@ const TableTileRejected = (props) => {
 
     axios.get('http://127.0.0.1:3001/allUsers',options)
     .then((result) => {
-
-      //populateRowsSubmitted(result.data)
-      console.log("result data " , result.data)
-      console.log("props data " , props.data)
-      setRows(populateRowsSubmitted(result.data))
-
+        setAllData(result.data)
+        setRows(populateRowsSubmitted(result.data))
     })
     .catch((err) => {
       console.log(err)
@@ -257,8 +254,9 @@ const TableTileRejected = (props) => {
   const handleRowChange = (currData) => {
       setRows(currData)
   }
-  const handleCurrentClicked = (obj) => {
-    setCurrentClicked(obj)
+  const handleCurrentClicked = (selectedRow) => {
+    let val = allData.filter((data) => (data.enrollId === selectedRow.eid))
+    setCurrentClicked(val[0])
   }
   const handleBackdropClose = () => {
       setBackdrop(false);
