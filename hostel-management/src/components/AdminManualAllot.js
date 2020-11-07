@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AdminDashboard = () => {
+const AdminManualAllot = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -96,16 +96,16 @@ const AdminDashboard = () => {
         </AppBar>
         
             <TabPanel value={value} index={0} dir={theme.direction}>
-              <TableTileSubmitted data = {UserData} />
+              <TableTileSubmitted />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-            <TableTileVerified data = {UserData} />
+            <TableTileVerified />
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
-              <TableTileAccepted data={UserData} />
+              <TableTileAccepted />
             </TabPanel>
             <TabPanel value={value} index={3} dir={theme.direction}>
-              <TableTileRejected data = {UserData} />
+              <TableTileRejected />
             </TabPanel>
         
         </div>
@@ -114,4 +114,4 @@ const AdminDashboard = () => {
   );
 }
 
-export default AdminDashboard;
+export default AdminManualAllot;

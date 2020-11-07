@@ -18,6 +18,8 @@ exports.insert = (req, res) => {
     req.body.state = '';
     req.body.address1 = '';
     req.body.address2 = '';
+    req.body.income = undefined;
+    req.body.distance = undefined;
     req.body.submittedStatus = 1;
 
     

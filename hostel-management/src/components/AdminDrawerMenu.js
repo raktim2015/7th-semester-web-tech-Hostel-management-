@@ -11,12 +11,17 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
+
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import MenuIcon from '@material-ui/icons/Menu';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import SelectAllIcon from '@material-ui/icons/SelectAll';
+
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AdminDashboard from './AdminDashboard';
+import Dashboard from './Dashboard'
+import AdminManualAllot from './AdminManualAllot';
 
 
 const drawerWidth = 240;
@@ -56,8 +61,12 @@ const useStyles = makeStyles((theme) => ({
 
 const drawerContents = [
     {
-        key: "Dashboard",
-        value: <AdminDashboard/>
+      key: "Dashboard",
+      value: <DashboardIcon/>
+    },
+    {
+        key: "Allot Manually",
+        value: <GroupAddIcon/>
     },
     {
         key: "Logout",
@@ -66,7 +75,8 @@ const drawerContents = [
 ]
 
 const drawerKeys = {
-    "Dashboard": <AdminDashboard/>,
+    "Dashboard": <Dashboard />,
+    "Allot Manually": <AdminManualAllot/>,
     "Logout": <InboxIcon/>  
 }
 
@@ -94,7 +104,7 @@ function AdminDrawerMenu(props) {
       <List>
         {drawerContents.map((text, index) => (
           <ListItem button key={text.key} onClick={() => handleSetContent(text.key)}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemIcon>{text.value}</ListItemIcon>
             <ListItemText primary={text.key} />
           </ListItem>
         ))}
