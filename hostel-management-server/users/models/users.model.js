@@ -17,6 +17,8 @@ const userSchema = new Schema({
     address2: {type: String},
     enrollId: {type: String},
     dept: {type: String},
+    distance: {type: Number},
+    income: {type: Number},
     submittedStatus: {type: Number},
     permissionLevel: {type: Number}
 });

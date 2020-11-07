@@ -5,6 +5,7 @@ import StatusCard from '../components/StatusCard';
 import axios from 'axios';
 import {useAuth} from './../context/auth'
 import CheckIcon from '@material-ui/icons/Check';
+import PublishOutlinedIcon from '@material-ui/icons/PublishOutlined';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -129,7 +130,7 @@ const Student = (props) => {
     const [userData, setUserData] = React.useState({})
     const [submitCheck, setsubmitCheck] = React.useState(false)
     const [submitButtonDisabled, setSubmitButtonDisabled] = React.useState(false)
-    
+    const [uploadID, setUploadID] = React.useState({})
     const authkey = useAuth().authTokens
     const body = userData
     const options = {
@@ -289,9 +290,25 @@ const Student = (props) => {
                 enrollId: document.getElementById('enrollId').value
             })
         }
+        else if(event === 'income') {
+            setUserData({
+                ...userData,
+                income: document.getElementById('income').value
+            })
+        }
+        else if(event === 'distance') {
+            setUserData({
+                ...userData,
+                distance: document.getElementById('distance').value
+            })
+        }
         
     }
 
+    const handleUploadIDClick = (e) => {
+        setUploadID(e.target.files[0])
+
+    }
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
@@ -457,6 +474,13 @@ const Student = (props) => {
                                     ))}
                                 </TextField>
                             </Grid>
+                            <Grid item sm={12} xs={5} md={5}>
+                                <TextField className={classes.TextFieldClass} required id="income" label="Family Income (in lakhs)" variant="outlined" value={userData.income || ''} onChange={() => onDataChange("income")}/>
+                            </Grid>
+                            <Grid item sm={12} xs={5} md={5}>
+                                <TextField className={classes.TextFieldClass} required id="distance" label="Distance from college (in km)" variant="outlined" value={userData.distance || ''} onChange={() => onDataChange("distance")}/>
+                            </Grid>
+
 
                             <Grid item sm={3} xs={5} md={3}>
                                 <Button
@@ -484,7 +508,67 @@ const Student = (props) => {
                         
                     ):
                     ((activeStep==2)?
-                    (<Grid item>Upload Documents</Grid>):
+                    (
+                        <Grid container spacing={0} className={classes.infoContainer}>
+                            <Grid item xs={12} sm={5} >
+                                <Grid container spacing={0}>
+                                    <Grid item xs={12} >
+                                        <Typography variant="subtitle1">
+                                            Upload College ID card
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            component="label"
+                                            size="medium"
+                                            startIcon={<PublishOutlinedIcon/>}
+                                            >
+                                            Upload File
+                                            <input
+                                                type="file"
+                                                style={{ display: "none" }}
+                                            />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            
+                            <Grid item xs={12} sm={5} >
+                                <Grid container spacing={0}>
+                                    <Grid item xs={12} >
+                                        <Typography variant="subtitle1">
+                                            Upload family income certificate
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            component="label"
+                                            size="medium"
+                                            startIcon={<PublishOutlinedIcon/>}
+                                            >
+                                            Upload File
+                                            <input
+                                                type="file"
+                                                style={{ display: "none" }}
+                                            />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} sm={5} >
+                                <Typography variant = "subtitle2" >No file selected</Typography>
+
+                            </Grid>
+                            <Grid item xs={12} sm={5} >
+                                <Typography variant = "subtitle2" >No file selected</Typography>
+
+                            </Grid>
+                        </Grid>
+                    ):
                         
                         (
                             <div>

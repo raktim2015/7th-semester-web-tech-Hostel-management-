@@ -228,7 +228,7 @@ const TableTileSubmitted = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [backdropOpen,setBackdrop] = React.useState(false);
   const [currentClicked, setCurrentClicked] = React.useState({});
-  const [rows, setRows] = React.useState(populateRows(props.data));
+  const [rows, setRows] = React.useState([]);
   const [allData,setAllData] = React.useState([])
 
   const authkey = useAuth().authTokens
