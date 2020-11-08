@@ -1,16 +1,26 @@
 import React from 'react';
 import { makeStyles, useTheme} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import {Grid, Card, CardContent, Box} from '@material-ui/core';
-import {ResponsiveContainer, PieChart, Pie, Chart, Cell, Legend, ComposedChart, CartesianGrid,XAxis,YAxis,Tooltip,Area,Bar,Line} from 'recharts'
+import {ResponsiveContainer, PieChart, Pie, Cell, Legend, 
+        ComposedChart, CartesianGrid,XAxis,YAxis,Tooltip, 
+        Bar, RadialBar, RadialBarChart} from 'recharts'
+
+import { 
+    ComposableMap, Geographies, Geography 
+  } from 'react-simple-maps';
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {useQuery} from 'react-query';
 import {useAuth} from './../context/auth';
+import LinearGradient from './LinearGradient';
+import { scaleQuantile } from 'd3-scale';
+import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042','#DC143C'];
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,8 +72,8 @@ const ProfileData = (props) => {
     
     
     //store data for display
-    Object.keys(props.status).forEach((obj) => {
-        data.push({name:obj, value:props.status[obj]})
+    Object.keys(props.status).forEach((obj,index) => {
+        data.push({name:obj, value:props.status[obj],fill:COLORS[index]})
     })
 
     //normalize
@@ -77,9 +87,20 @@ const ProfileData = (props) => {
                 <Typography variant = "h6" center>
                     Profile Data
                 </Typography>
-                {data.map((obj,index) => (
-                    <LinearProgressWithLabel value={normalize(total,obj.value)} valueToDisplay={obj.value} barColor={COLORS[index]} text={obj.name}/>
-                ))}
+                <div style={{height:300}}>
+                    <ResponsiveContainer>
+                        <RadialBarChart
+                            width={500}
+                            height={350}
+                            innerRadius="10%"
+                            outerRadius="80%"
+                            data={data}
+                        >
+                            <RadialBar minAngle={15} label={{ fill: '#666', position: 'insideStart' }} background clockWise={true} dataKey='value' />
+                            <Legend iconSize={10} width={120} height={140} layout='vertical' verticalAlign='middle' align="right" />
+                        </RadialBarChart>
+                    </ResponsiveContainer>
+                </div>
             </CardContent>
         </Card>   
     )
@@ -149,7 +170,7 @@ const ProfilePie = (props) => {
     )
 }
 
-const SalaryDistanceChart = (props) => {
+const SalaryChart = (props) => {
 
     const labels = ["Below 50k","50k - 1L","1L - 1.5L","1.5L - 2L","2L - 2.5L","2.5L - 5L","Above 5L"]
     const slabs = labels.map((obj) => 0)
@@ -173,20 +194,180 @@ const SalaryDistanceChart = (props) => {
 
     
     return(
-        <div style={{height:300}}>
-            <ResponsiveContainer>
-                <ComposedChart height={300} data={data}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <CartesianGrid stroke="#f5f5f5" />
-                    <Bar dataKey="students" barSize={20} fill="#413ea0" />
-                </ComposedChart>
-            </ResponsiveContainer>
-        </div>
+        <Card variant="outlined" style={{height:400}}>
+            <CardContent>
+                <Typography variant = "h6">
+                    Family Income
+                </Typography>
+                <div style={{height:300, marginTop:20}}>
+                    <ResponsiveContainer>
+                        <ComposedChart height={300} data={data}>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Bar dataKey="students" barSize={20} fill="#413ea0" />
+                        </ComposedChart>
+                    </ResponsiveContainer>
+                </div>
+            </CardContent>
+
+        </Card>
+        
     );
 
+}
+
+const StateChart = (props) => {
+
+    const INDIA_TOPO_JSON = require('../data/india.topo.json');
+
+    const PROJECTION_CONFIG = {
+    scale: 350,
+    center: [78.9629, 22.5937] // always in [East Latitude, North Longitude]
+    };
+
+    // Red Variants
+    const COLOR_RANGE = [
+    '#ffedea',
+    '#ffcec5',
+    '#ffad9f',
+    '#ff8a75',
+    '#ff5533',
+    '#e2492d',
+    '#be3d26',
+    '#9a311f',
+    '#782618'
+    ];
+
+    const DEFAULT_COLOR = '#EEE';
+
+    const getRandomInt = () => {
+    return parseInt(Math.random() * 100);
+    };
+
+    const geographyStyle = {
+    default: {
+        outline: 'none'
+    },
+    hover: {
+        fill: '#ccc',
+        transition: 'all 250ms',
+        outline: 'none'
+    },
+    pressed: {
+        outline: 'none'
+    }
+    };
+
+    // will generate random heatmap data on every call
+    const getHeatMapData = () => {
+    return [
+        { id: 'AP', state: 'Andhra Pradesh', value: getRandomInt() },
+        { id: 'AR', state: 'Arunachal Pradesh', value: getRandomInt() },
+        { id: 'AS', state: 'Assam', value: getRandomInt() },
+        { id: 'BR', state: 'Bihar', value: getRandomInt() },
+        { id: 'CT', state: 'Chhattisgarh', value: getRandomInt() },
+        { id: 'GA', state: 'Goa', value: 21 },
+        { id: 'GJ', state: 'Gujarat', value: 22 },
+        { id: 'HR', state: 'Haryana', value: getRandomInt() },
+        { id: 'HP', state: 'Himachal Pradesh', value: 24 },
+        { id: 'JH', state: 'Jharkhand', value: 26 },
+        { id: 'KA', state: 'Karnataka', value: 27 },
+        { id: 'KL', state: 'Kerala', value: getRandomInt() },
+        { id: 'MP', state: 'Madhya Pradesh', value: getRandomInt() },
+        { id: 'MH', state: 'Maharashtra', value: getRandomInt() },
+        { id: 'MN', state: 'Manipur', value: getRandomInt() },
+        { id: 'ML', state: 'Meghalaya', value: 59 },
+        { id: 'MZ', state: 'Mizoram', value: getRandomInt() },
+        { id: 'NL', state: 'Nagaland', value: 59 },
+        { id: 'OR', state: 'Odisha', value: 59 },
+        { id: 'PB', state: 'Punjab', value: getRandomInt() },
+        { id: 'RJ', state: 'Rajasthan', value: getRandomInt() },
+        { id: 'SK', state: 'Sikkim', value: getRandomInt() },
+        { id: 'TN', state: 'Tamil Nadu', value: getRandomInt() },
+        { id: 'TG', state: 'Telangana', value: getRandomInt() },
+        { id: 'TR', state: 'Tripura', value: 14 },
+        { id: 'UT', state: 'Uttarakhand', value: getRandomInt() },
+        { id: 'UP', state: 'Uttar Pradesh', value: 15 },
+        { id: 'WB', state: 'West Bengal', value: 17 },
+        { id: 'WB', state: 'West Bengal', value: 17 },
+        { id: 'AN', state: 'Andaman and Nicobar Islands', value: getRandomInt() },
+        { id: 'CH', state: 'Chandigarh', value: getRandomInt() },
+        { id: 'DN', state: 'Dadra and Nagar Haveli', value: 19 },
+        { id: 'DD', state: 'Daman and Diu', value: 20 },
+        { id: 'DL', state: 'Delhi', value: 59 },
+        { id: 'JK', state: 'Jammu and Kashmir', value: 25 },
+        { id: 'LA', state: 'Ladakh', value: getRandomInt() },
+        { id: 'LD', state: 'Lakshadweep', value: getRandomInt() },
+        { id: 'PY', state: 'Puducherry', value: getRandomInt() }
+    ];
+    };
+
+    const [tooltipContent, setTooltipContent] = React.useState('');
+    const [data, setData] = React.useState(getHeatMapData());
+
+    const gradientData = {
+        fromColor: COLOR_RANGE[0],
+        toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
+        min: 0,
+        max: data.reduce((max, item) => (item.value > max ? item.value : max), 0)
+    };
+
+    const colorScale = scaleQuantile()
+        .domain(data.map(d => d.value))
+        .range(COLOR_RANGE);
+
+    const onMouseEnter = (geo, current = { value: 'NA' }) => {
+        return () => {
+        setTooltipContent(`${geo.properties.name}: ${current.value}`);
+        };
+    };
+
+    const onMouseLeave = () => {
+        setTooltipContent('');
+    };
+
+    const onChangeButtonClick = () => {
+        setData(getHeatMapData());
+    };
+
+    return (
+        <Card variant="outlined" style={{height:400}}>
+        <CardContent>
+            <Typography variant="h6" >States wise students' distribution</Typography>
+            <ReactTooltip>{tooltipContent}</ReactTooltip>
+                <ComposableMap
+                projectionConfig={PROJECTION_CONFIG}
+                projection="geoMercator"
+                width={400}
+                height={250}
+                data-tip=""
+                >
+                <Geographies geography={INDIA_TOPO_JSON}>
+                    {({ geographies }) =>
+                    geographies.map(geo => {
+                        const current = data.find(s => s.id === geo.id);
+                        return (
+                        <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                            style={geographyStyle}
+                            onMouseEnter={onMouseEnter(geo, current)}
+                            onMouseLeave={onMouseLeave}
+                        />
+                        );
+                    })
+                    }
+                </Geographies>
+                </ComposableMap>
+                <LinearGradient data={gradientData} />
+            </CardContent>
+        </Card>
+    );
+    
 }
 
 const Dashboard = () => {
@@ -226,8 +407,11 @@ const Dashboard = () => {
                         <Grid item xs={12} sm={5} style={{marginTop:20,marginBottom:20}}>
                             <ProfileData data={data.data} status={status} />
                         </Grid>
-                        <Grid item xs={12} sm={10} style={{marginTop:20,marginBottom:20}}>
-                            <SalaryDistanceChart data={data.data} />
+                        <Grid item xs={12} sm={5} style={{marginTop:20,marginBottom:20}}>
+                            <SalaryChart data={data.data} />
+                        </Grid>
+                        <Grid item xs={12} sm={5} style={{marginTop:20,marginBottom:20}}>
+                            <StateChart data={data.data} />
                         </Grid>
                     </Grid>
                 </Grid>
