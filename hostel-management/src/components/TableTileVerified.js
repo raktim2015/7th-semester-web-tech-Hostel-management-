@@ -236,19 +236,86 @@ const TableTileVerified = (props) => {
       headers: {'authorization': authkey}
   };
 
+  const normalizeIncome = (data) => {
+
+    let maxval = -999999999;
+    let minval = 999999999;
+    data.forEach((obj) => {
+      if(obj.submittedStatus===3)
+        maxval=Math.max(maxval,obj.income) 
+    });
+    data.forEach((obj) => {
+      if(obj.submittedStatus===3)
+        minval=Math.min(minval,obj.income) 
+    });
+    
+    const normalizedData = []
+    data.forEach((obj) => {
+      if(obj.submittedStatus === 3)
+        normalizedData.push((obj.income - minval)/(maxval-minval))
+    })
+    
+    return normalizedData;
+
+  }
+
+  const normalizeDistance = (data) => {
+    let maxval = -999999999;
+    let minval = 999999999;
+    data.forEach((obj) => {
+      if(obj.submittedStatus===3)
+        maxval=Math.max(maxval,obj.distance) 
+    });
+    data.forEach((obj) => {
+      if(obj.submittedStatus===3)
+        minval=Math.min(minval,obj.distance) 
+    });
+    
+    const normalizedData = []
+    data.forEach((obj) => {
+      if(obj.submittedStatus === 3)
+        normalizedData.push((obj.distance - minval)/(maxval-minval))
+    })
+    
+    return normalizedData;
+  }
+
   React.useEffect(() => {
 
     axios.get('http://127.0.0.1:3001/allUsers',options)
     .then((result) => {
       setAllData(result.data)
-      setRows(populateRowsSubmitted(result.data))
+      
+      if(props.filterState !==undefined) {
+       
+        //normalized values of verified profiles
+        const normalizedIncome = normalizeIncome(result.data)
+        const normalizedDistance = normalizeDistance(result.data)
+        const actData = result.data.filter((obj) => obj.submittedStatus===3)
+        const noOfDataToDisplay = Math.min(props.filterState.seats,actData.length)
+        const weightedData = []
+        actData.forEach((obj,index) => {
+          weightedData.push({
+            ...obj,
+            weight : (normalizedIncome[index]*props.filterState.incomeVal + normalizedDistance[index]*props.filterState.distanceVal)
+            })
+        })
+        weightedData.sort((a,b) => (a.weight > b.weight) ? 1 : ((b.weight > a.weight) ? -1 : 0));
+        weightedData.splice(noOfDataToDisplay)
+        setRows(populateRowsSubmitted(weightedData))  
 
+      }
+      else {
+        setRows(populateRowsSubmitted(result.data))
+      }
     })
     .catch((err) => {
       console.log(err)
     })
 
-  },[])
+    
+
+  },[props.filterState])
   
   
   

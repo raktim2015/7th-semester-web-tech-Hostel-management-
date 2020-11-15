@@ -336,7 +336,7 @@ const StateChart = (props) => {
     return (
         <Card variant="outlined" style={{height:400}}>
         <CardContent>
-            <Typography variant="h6" >States wise students' distribution</Typography>
+            <Typography variant="h6" >State wise students' distribution</Typography>
             <ReactTooltip>{tooltipContent}</ReactTooltip>
                 <ComposableMap
                 projectionConfig={PROJECTION_CONFIG}
