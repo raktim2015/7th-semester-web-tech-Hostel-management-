@@ -130,7 +130,6 @@ const Student = (props) => {
     const [userData, setUserData] = React.useState({})
     const [submitCheck, setsubmitCheck] = React.useState(false)
     const [submitButtonDisabled, setSubmitButtonDisabled] = React.useState(false)
-    const [uploadID, setUploadID] = React.useState({})
     const authkey = useAuth().authTokens
     const body = userData
     const options = {
@@ -219,6 +218,7 @@ const Student = (props) => {
     };
 
     const handleSubmit = () => {
+        console.log(userData,"userData")
         if(submitCheck) {
             axios.patch('http://127.0.0.1:3001/user', {submittedStatus:2}, options)
             .then((res)=>console.log(res))
@@ -229,7 +229,7 @@ const Student = (props) => {
         }
     }
 
-    const onDataChange = (event) => {
+    const onDataChange = (event, data) => {
         if(event === 'fname') {
             setUserData({
                 ...userData,
@@ -302,13 +302,25 @@ const Student = (props) => {
                 distance: document.getElementById('distance').value
             })
         }
-        
+        else if(event === 'incomeUpload'){
+            if(data.length===1){
+                setUserData({
+                    ...userData,
+                    incomeDoc: data[0]
+                })
+            }
+            
+        }
+        else if(event === 'idUpload'){
+            if(data.length===1){
+                setUserData({
+                    ...userData,
+                    idDoc: data[0]
+                })
+            }
+        }
     }
 
-    const handleUploadIDClick = (e) => {
-        setUploadID(e.target.files[0])
-
-    }
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
@@ -527,8 +539,10 @@ const Student = (props) => {
                                             >
                                             Upload File
                                             <input
+                                                id="idUpload"
                                                 type="file"
                                                 style={{ display: "none" }}
+                                                onChange={(event)=>onDataChange("idUpload",event.target.files)}
                                             />
                                         </Button>
                                     </Grid>
@@ -552,20 +566,50 @@ const Student = (props) => {
                                             >
                                             Upload File
                                             <input
+                                                id ="incomeUpload"
                                                 type="file"
                                                 style={{ display: "none" }}
+                                                onChange={(event)=>onDataChange("incomeUpload",event.target.files)}
                                             />
                                         </Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} sm={5} >
-                                <Typography variant = "subtitle2" >No file selected</Typography>
-
+                                {(userData["idDoc"] === undefined)?(
+                                    <Typography variant = "subtitle2" >No File Selected</Typography>
+                                ):(
+                                    <Typography variant = "subtitle2" >{userData.idDoc.name}</Typography>
+                                )}
                             </Grid>
                             <Grid item xs={12} sm={5} >
-                                <Typography variant = "subtitle2" >No file selected</Typography>
-
+                                {(userData["incomeDoc"] === undefined)?(
+                                    <Typography variant = "subtitle2" >No File Selected</Typography>
+                                ):(
+                                    <Typography variant = "subtitle2" >{userData.incomeDoc.name}</Typography>
+                                )}
+                            </Grid>
+                            <Grid item sm={3} xs={5} md={3}>
+                                <Button
+                                    style={{display:'flex',alignContent:'flex-end'}}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.TextFieldClass}
+                                >
+                                Next
+                                </Button>
+                            </Grid>
+                            <Grid item sm={3} xs={5} md={3}>
+                                <Button
+                                    style={{display:'flex',alignContent:'flex-end'}}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleComplete}
+                                    className={classes.TextFieldClass}
+                                >
+                                Save
+                                </Button>
                             </Grid>
                         </Grid>
                     ):
