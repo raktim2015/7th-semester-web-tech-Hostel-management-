@@ -15,13 +15,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import MenuIcon from '@material-ui/icons/Menu';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import SelectAllIcon from '@material-ui/icons/SelectAll';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Dashboard from './Dashboard'
 import AdminManualAllot from './AdminManualAllot';
+import AdminAutoAllot from './AdminAutoAllot';
 
 
 const drawerWidth = 240;
@@ -69,6 +70,10 @@ const drawerContents = [
         value: <GroupAddIcon/>
     },
     {
+        key: "Auto Allotment",
+        value: <AssignmentIcon/>
+    },
+    {
         key: "Logout",
         value: <InboxIcon/>
     }
@@ -77,7 +82,9 @@ const drawerContents = [
 const drawerKeys = {
     "Dashboard": <Dashboard />,
     "Allot Manually": <AdminManualAllot/>,
-    "Logout": <InboxIcon/>  
+    "Auto Allotment": <AdminAutoAllot />,
+    "Logout": <InboxIcon/>
+    
 }
 
 
@@ -135,7 +142,6 @@ function AdminDrawerMenu(props) {
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
           <Drawer
             container={container}
