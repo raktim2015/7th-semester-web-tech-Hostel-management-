@@ -130,6 +130,8 @@ const ProfilePie = (props) => {
     Object.keys(props.status).forEach((obj) => {
         data.push({name:obj, value:props.status[obj]})
     })
+
+    console.log(data)
     
     return(
         <Card variant="outlined"  style={{height:400}}>
@@ -220,7 +222,7 @@ const SalaryChart = (props) => {
 }
 
 const StateChart = (props) => {
-
+    console.log(props)
     const INDIA_TOPO_JSON = require('../data/india.topo.json');
 
     const PROJECTION_CONFIG = {
@@ -263,46 +265,55 @@ const StateChart = (props) => {
 
     // will generate random heatmap data on every call
     const getHeatMapData = () => {
-    return [
-        { id: 'AP', state: 'Andhra Pradesh', value: getRandomInt() },
-        { id: 'AR', state: 'Arunachal Pradesh', value: getRandomInt() },
-        { id: 'AS', state: 'Assam', value: getRandomInt() },
-        { id: 'BR', state: 'Bihar', value: getRandomInt() },
-        { id: 'CT', state: 'Chhattisgarh', value: getRandomInt() },
-        { id: 'GA', state: 'Goa', value: 21 },
-        { id: 'GJ', state: 'Gujarat', value: 22 },
-        { id: 'HR', state: 'Haryana', value: getRandomInt() },
-        { id: 'HP', state: 'Himachal Pradesh', value: 24 },
-        { id: 'JH', state: 'Jharkhand', value: 26 },
-        { id: 'KA', state: 'Karnataka', value: 27 },
-        { id: 'KL', state: 'Kerala', value: getRandomInt() },
-        { id: 'MP', state: 'Madhya Pradesh', value: getRandomInt() },
-        { id: 'MH', state: 'Maharashtra', value: getRandomInt() },
-        { id: 'MN', state: 'Manipur', value: getRandomInt() },
-        { id: 'ML', state: 'Meghalaya', value: 59 },
-        { id: 'MZ', state: 'Mizoram', value: getRandomInt() },
-        { id: 'NL', state: 'Nagaland', value: 59 },
-        { id: 'OR', state: 'Odisha', value: 59 },
-        { id: 'PB', state: 'Punjab', value: getRandomInt() },
-        { id: 'RJ', state: 'Rajasthan', value: getRandomInt() },
-        { id: 'SK', state: 'Sikkim', value: getRandomInt() },
-        { id: 'TN', state: 'Tamil Nadu', value: getRandomInt() },
-        { id: 'TG', state: 'Telangana', value: getRandomInt() },
-        { id: 'TR', state: 'Tripura', value: 14 },
-        { id: 'UT', state: 'Uttarakhand', value: getRandomInt() },
-        { id: 'UP', state: 'Uttar Pradesh', value: 15 },
-        { id: 'WB', state: 'West Bengal', value: 17 },
-        { id: 'WB', state: 'West Bengal', value: 17 },
-        { id: 'AN', state: 'Andaman and Nicobar Islands', value: getRandomInt() },
-        { id: 'CH', state: 'Chandigarh', value: getRandomInt() },
-        { id: 'DN', state: 'Dadra and Nagar Haveli', value: 19 },
-        { id: 'DD', state: 'Daman and Diu', value: 20 },
-        { id: 'DL', state: 'Delhi', value: 59 },
-        { id: 'JK', state: 'Jammu and Kashmir', value: 25 },
-        { id: 'LA', state: 'Ladakh', value: getRandomInt() },
-        { id: 'LD', state: 'Lakshadweep', value: getRandomInt() },
-        { id: 'PY', state: 'Puducherry', value: getRandomInt() }
-    ];
+        const temp = [
+            { id: 'AP', state: 'Andhra Pradesh', value:0 },
+            { id: 'AR', state: 'Arunachal Pradesh', value:0 },
+            { id: 'AS', state: 'Assam', value:0 },
+            { id: 'BR', state: 'Bihar', value:0 },
+            { id: 'CT', state: 'Chhattisgarh', value:0 },
+            { id: 'GA', state: 'Goa', value:0 },
+            { id: 'GJ', state: 'Gujarat', value:0 },
+            { id: 'HR', state: 'Haryana', value:0 },
+            { id: 'HP', state: 'Himachal Pradesh', value:0 },
+            { id: 'JH', state: 'Jharkhand', value:0 },
+            { id: 'KA', state: 'Karnataka', value:0 },
+            { id: 'KL', state: 'Kerala', value:0 },
+            { id: 'MP', state: 'Madhya Pradesh', value:0 },
+            { id: 'MH', state: 'Maharashtra', value:0 },
+            { id: 'MN', state: 'Manipur', value:0 },
+            { id: 'ML', state: 'Meghalaya', value:0 },
+            { id: 'MZ', state: 'Mizoram', value:0 },
+            { id: 'NL', state: 'Nagaland', value:0 },
+            { id: 'OR', state: 'Odisha', value:0 },
+            { id: 'PB', state: 'Punjab', value:0 },
+            { id: 'RJ', state: 'Rajasthan', value:0 },
+            { id: 'SK', state: 'Sikkim', value:0 },
+            { id: 'TN', state: 'Tamil Nadu', value:0 },
+            { id: 'TG', state: 'Telangana', value:0 },
+            { id: 'TR', state: 'Tripura', value:0 },
+            { id: 'UT', state: 'Uttarakhand', value:0 },
+            { id: 'UP', state: 'Uttar Pradesh', value:0 },
+            { id: 'WB', state: 'West Bengal', value:0 },
+            { id: 'WB', state: 'West Bengal', value:0 },
+            { id: 'AN', state: 'Andaman and Nicobar Islands', value:0 },
+            { id: 'CH', state: 'Chandigarh', value:0 },
+            { id: 'DN', state: 'Dadra and Nagar Haveli', value:0 },
+            { id: 'DD', state: 'Daman and Diu', value:0 },
+            { id: 'DL', state: 'Delhi', value:0 },
+            { id: 'JK', state: 'Jammu and Kashmir', value:0 },
+            { id: 'LA', state: 'Ladakh', value:0 },
+            { id: 'LD', state: 'Lakshadweep', value:0 },
+            { id: 'PY', state: 'Puducherry', value:0 }
+        ];
+        
+        for(let i=0;i<props.data.length;i++){
+            for(let j=0;j<temp.length;j++){
+                if(props.data[i]["state"] === temp[j]["state"])
+                    temp[j].value +=1;
+            }
+        }   
+
+        return temp
     };
 
     const [tooltipContent, setTooltipContent] = React.useState('');

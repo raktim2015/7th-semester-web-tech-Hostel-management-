@@ -21,6 +21,8 @@ exports.insert = (req, res) => {
     req.body.income = undefined;
     req.body.distance = undefined;
     req.body.submittedStatus = 1;
+    req.body.idDocName = '';
+    req.body.incomeDocName = '';
 
     
     
@@ -65,6 +67,7 @@ exports.getById = (req, res) => {
 };
 
 exports.patchById = (req, res) => {
+    console.log(req.body)
     UserModel.patchUser(req.params.email, req.body)
         .then((result) => {
             console.log(result)

@@ -97,12 +97,7 @@ const StatusCard = (props) => {
         <Chip label={(props.submittedStatus-1 >= 0)?(statusContents[props.submittedStatus-1].statusHeader):' '} style={{backgroundColor:'lightgreen', marginTop:2, marginBottom:2}}/>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-            <DeleteIcon />
-            <Typography variant="body2" color="textSecondary" component="p">
-                &nbsp;Withdraw Application
-            </Typography>
-        </IconButton>
+
         
         <IconButton
           className={clsx(classes.expand, {
@@ -112,6 +107,9 @@ const StatusCard = (props) => {
           aria-expanded={expanded}
           aria-label="show more"
         >
+          <Typography variant="body2" color="textSecondary" component="p">
+                &nbsp;View More
+          </Typography>
           <ExpandMoreIcon />
         </IconButton>
       </CardActions>
