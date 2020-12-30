@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 
 const AuthorizationRouter = require('./authorization/routes.config');
 const UsersRouter = require('./users/routes.config');
-
+app.use("/static", express.static('public'))
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', 'true');

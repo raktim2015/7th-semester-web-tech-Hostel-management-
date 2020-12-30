@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid,Paper,TextField, Typography} from '@material-ui/core';
+import {Grid,Paper,TextField, Typography, Link, Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
 
@@ -112,6 +112,24 @@ state: "Uttar Pradesh"
                     </Grid>
                     <Grid item xs={12} md={5}>
                         <TextField className={classes.TextFieldClass}  id="income" variant="outlined" label="Income (in lakhs)" value = {props.information.income || ''} readonly />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Button variant="contained" color="primary"
+                            onClick={() => {
+                                window.open("http://localhost:3001/static/"+props.information.idDocName)
+                            }}
+                            >
+                            View ID 
+                        </Button>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Button variant="contained" color="primary"
+                            onClick={() => {
+                                window.open("http://localhost:3001/static/"+props.information.incomeDocName)
+                            }}
+                            >
+                            View Income Certificate
+                        </Button>
                     </Grid>
                 </Grid>
             </Grid>

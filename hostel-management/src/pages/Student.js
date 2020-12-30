@@ -306,7 +306,8 @@ const Student = (props) => {
             if(data.length===1){
                 setUserData({
                     ...userData,
-                    incomeDoc: data[0]
+                    incomeDoc: data[0],
+                    incomeDocName: data[0].name
                 })
             }
             
@@ -315,7 +316,8 @@ const Student = (props) => {
             if(data.length===1){
                 setUserData({
                     ...userData,
-                    idDoc: data[0]
+                    idDoc: data[0],
+                    idDocName: data[0].name
                 })
             }
         }
@@ -335,11 +337,29 @@ const Student = (props) => {
         setCompleted(newCompleted);
         
         
-        //console.log(body)
+        console.log(body)
 
         axios.patch('http://127.0.0.1:3001/user', body, options)
         .then((res)=>console.log(res))
         .catch(() => {})
+
+        if("idDoc" in userData){
+            console.log("idDoc Present")
+            const data = new FormData() 
+            data.append('file', userData.idDoc)
+            axios.post("http://127.0.0.1:3001/upload", data, options)
+            .then(res => {
+                console.log(res.statusText,"ID UPLOAD")
+            }).catch((error)=>{console.log(error)})
+        }
+        if("incomeDoc" in userData){
+            const data = new FormData() 
+            data.append('file', userData.incomeDoc)
+            axios.post("http://127.0.0.1:3001/upload", data, options)
+            .then(res => {
+                console.log(res.statusText,"INCOME UPLOAD")
+            }).catch((error)=>{console.log(error)})
+        }
 
         if (completed.size !== totalSteps()) {
             handleNext();
@@ -363,7 +383,7 @@ const Student = (props) => {
                         <Typography variant="h6" className={classes.title}>
                             Hostel Management System
                         </Typography>
-                        <Button color="inherit">Welcome Raktim</Button>
+                        <Button color="inherit">Welcome</Button>
                     </Toolbar>
                 </AppBar>
             </Grid>

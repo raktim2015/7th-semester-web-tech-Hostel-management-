@@ -20,7 +20,9 @@ const userSchema = new Schema({
     distance: {type: Number},
     income: {type: Number},
     submittedStatus: {type: Number},
-    permissionLevel: {type: Number}
+    permissionLevel: {type: Number},
+    incomeDocName: {type: String},
+    idDocName: {type: String}
 });
 
 userSchema.virtual('id').get(function () {
